@@ -2,7 +2,7 @@ import React from 'react';
 import Navigation from './components/navigation/Navigation';
 import Logo from './components/logo/Logo';
 import ImageLinkForm from './components/imagelinkform/ImageLinkForm';
-import Rank from './components/Rank/Rank';
+import Rank from './components/rank/Rank';
 import './App.css';
 
 
