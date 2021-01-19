@@ -18,17 +18,6 @@ const app = new Clarifai.App({
 
 
 
-// @@
-// const {ClarifaiStub, grpc} = require("clarifai-nodejs-grpc");
-
-// const stub = ClarifaiStub.grpc();
-
-// // This will be used by every Clarifai endpoint call.
-// const metadata = new grpc.Metadata();
-// metadata.set("authorization","fdd1ada30f534811a38953615eff72a2");
-// @@@
-
-
 
 const particalObject = {
   particles: {
@@ -54,23 +43,22 @@ class App extends React.Component {
     super();
     this.state= {
       input: '',
+      imageUrl: ''
     }
   }
 
   // events happen on imagelinkform in input,button tag.
   onInputChange = (event) =>{  
-    console.log(event.target.value);
+    this.setState({input: event.target.value});
   }
 
   onDetectBtn = () => {
-    console.log('click');
-
-
+    this.setState({imageUrl: this.state.input});
     app.models
-     .predict("eeed0b6733a644cea07cf4c60f87ebb7",  "https://samples.clarifai.com/face-det.jpg")
+     .predict("53e1df302c079b3db8a0a36033ed2d15",  this.state.input)
        .then(
          function(response) {
-          console.log(response)
+          console.log(response.outputs[0].data.regions[0].regions_info.bounding_box);
          },
          function(err) {
 
@@ -79,20 +67,20 @@ class App extends React.Component {
   }
 
 
-  render(){  
+  render() {  
     return (
       <div className="App">
           <Particles className='particles'
             params={particalObject}
          />
-        <Navigation/>
-        <Logo/>
-        <Rank/>
-        <ImageLinkForm 
+         <Navigation/>
+         <Logo/>
+         <Rank/>
+         <ImageLinkForm 
           onInputChange = {this.onInputChange}
           onDetectBtn = {this.onDetectBtn}
-        />
-        <FaceRecognition/>
+         />
+         <FaceRecognition imageUrl= {this.state.imageUrl}/>
       </div>
        );
    }  
