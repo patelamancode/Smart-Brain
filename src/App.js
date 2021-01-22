@@ -43,9 +43,29 @@ class App extends React.Component {
     super();
     this.state= {
       input: '',
-      imageUrl: ''
+      imageUrl: '',
+      box: {}
     }
   }
+
+  calculateFaceDetection = (data) => {
+    const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
+    const image = document.getElementById('inputImage');
+    const width = Number(image.width);
+    const height = Number(image.height);
+    return{
+      leftCol: clarifaiFace.left_col * width,
+      topRow: clarifaiFace.top_row * height,
+      rightCol: width - (clarifaiFace.right_col *width),
+      bottomRow: height - (clarifaiFace.bottom_row * height)
+    }
+  }
+
+  displayFaceBox = (box) => {
+    console.log(box)
+    this.setState({box: box});
+  }
+
 
   // events happen on imagelinkform in input,button tag.
   onInputChange = (event) =>{  
@@ -56,14 +76,9 @@ class App extends React.Component {
     this.setState({imageUrl: this.state.input});
     app.models
      .predict("53e1df302c079b3db8a0a36033ed2d15",  this.state.input)
-       .then(
-         function(response) {
-          console.log(response.outputs[0].data.regions[0].regions_info.bounding_box);
-         },
-         function(err) {
-
-         }
-        )
+        .then(response => this.displayFaceBox(this.calculateFaceDetection(response))) 
+        .catch(err => console.log(err));  
+        
   }
 
 
